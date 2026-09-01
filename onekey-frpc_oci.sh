@@ -132,9 +132,9 @@ info "  ✓ 已删除 unprivileged: 1（转为特权容器）"
 pct set ${CTID} --cmode shell
 info "  ✓ 控制台模式已设为 shell"
 
-# 开机自启 + 启动顺序（frpc 无容器内依赖，order=4 占位）
-pct set ${CTID} --onboot 1 --startup order=4,up=10
-info "  ✓ 已设置 onboot=1、startup order=4,up=10"
+# 开机自启 + 启动顺序（依赖链：RouterOS order=1 → Tailscale order=2 → frpc order=3 → Jellyfin order=5，mosdns 已删腾出 3）
+pct set ${CTID} --onboot 1 --startup order=3,up=10
+info "  ✓ 已设置 onboot=1、startup order=3,up=10"
 
 # entrypoint 覆写：镜像 ENTRYPOINT=/usr/bin/frpc 无参数会因找不到配置立即退出
 # （默认找工作目录 ./frpc.ini），必须带 -c 指定配置文件
