@@ -37,6 +37,10 @@ VZTPL_DIR="/var/lib/vz/template/cache"
 ROOTFS="local:0.25"
 DATA_DIR="/opt/frpc"
 
+# ---------- 启动提示（配置预检前） ----------
+warn "请确保 ${DATA_DIR}/frpc.toml 已配置就位且正确，否则容器启动会失败"
+read -p "确认配置已就位？按回车继续，Ctrl-C 取消... " DUMMY </dev/tty
+
 # ---------- 配置文件预检（frpc 无有效配置会立即退出，必须先就位） ----------
 mkdir -p "${DATA_DIR}"
 if [ ! -f "${DATA_DIR}/frpc.toml" ]; then
