@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================
-# onekey-frpc_oci — PVE 一键重建 OCI frpc CT（OCI-Frpc）
+# onekey-frpc_oci — PVE 一键重建 OCI frpc CT（OCI-FrpClient）
 # 适用环境: PVE 9.1+（OCI 支持），宿主 root 运行
 # 功能: 拉 OCI 镜像 → 建特权 CT → 配置持久化 → 启动验证
 #       frpc 内网穿透客户端（frps 在公网，frpc 主动出站连接，无需入站端口）
@@ -29,7 +29,7 @@ command -v skopeo &>/dev/null || err "未找到 skopeo（PVE 9.1+ OCI 支持依�
 
 # ---------- 配置 ----------
 CTID=103
-CT_NAME="OCI-Frpc"
+CT_NAME="OCI-FrpClient"
 CT_IP="192.168.50.4/24"
 CT_GW="192.168.50.1"
 VER="v0.71.0"
