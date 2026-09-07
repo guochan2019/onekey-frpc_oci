@@ -60,7 +60,7 @@ remotePort = 8080
 2. **`--cmode shell` 在 OCI 创建流程不写入 conf**，脚本用 `pct set` 显式设置。
 3. **镜像无 CMD**：`ENTRYPOINT ["/usr/bin/frpc"]` 不带参数启动会因找不到配置立即退出。脚本用 `pct set --entrypoint "/usr/bin/frpc -c /opt/frpc/frpc.toml"` 覆写（pct create/set 均支持带参数 entrypoint）。
 4. **配置文件必须启动前就位**：frpc 配置解析失败会立即退出（容器秒停）。`/opt/frpc` 存在即保留，重建不丢配置。
-5. **`loginFailExit` 默认 true**（源码确认）：首次连接 frps 失败（含不可达）即退出且 CT 不自动恢复。建议配置里加 `loginFailExit = false`。
+5. **`loginFailExit` 默认 true**（源码确认）：首次连接 frps 失败（含不可达）即退出且 CT 不自动恢复。**脚本已自动兜底（2026-09-07）**：frpc.toml 缺该键时自动插入 `loginFailExit = false`，无需手动。
 6. **webServer 管理面板绑定地址必须是容器自己的 IP**（或 127.0.0.1）——绑到非本机地址会 `bind: cannot assign requested address` 秒退（旧配置从别的机器拷来易踩）。
 7. **镜像为 alpine 精简版（无 curl）**：验证走 /proc/1/comm + cmdline + 存活判定，连通性以 frps 仪表盘为准。
 8. IPv6 不配置（net0 留空）、DNS 不设置、MAC 由 PVE 随机生成、firewall=0。
