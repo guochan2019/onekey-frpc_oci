@@ -58,6 +58,16 @@ if [ ! -f "${DATA_DIR}/frpc.toml" ]; then
   完整参数见 https://gofrp.org"
 fi
 
+# ---------- 保活兜底（OCI 无 systemd 守护，frps 一断容器即停） ----------
+# frp 默认 loginFailExit=true：首次连 frps 失败即退出 → PID1 退出 → CT 停止
+# OCI 容器无守护进程，必须 =false 让 frpc 无限重试保活（与部署笔记要求一致）
+if ! grep -q '^loginFailExit' "${DATA_DIR}/frpc.toml"; then
+  sed -i '1i loginFailExit = false' "${DATA_DIR}/frpc.toml"
+  info "  ✓ frpc.toml 已补 loginFailExit = false（frps 不可达时无限重试保活）"
+elif grep -q '^loginFailExit[[:space:]]*=[[:space:]]*true' "${DATA_DIR}/frpc.toml"; then
+  warn "  frpc.toml 的 loginFailExit=true——frps 一断容器即停，建议改为 false"
+fi
+
 # ---------- 检测 local 存储模板目录 ----------
 if [ ! -d "${VZTPL_DIR}" ]; then
   VZTPL_DIR=$(pveam list local 2>/dev/null | awk 'NR==2{print $2}' | sed 's|local:vztmpl/.*||')
